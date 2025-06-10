@@ -1,11 +1,6 @@
 import objetos.*
 import piratas.*
 
-/*
- y por eso sólo aceptará en su tripulación a los piratas que le sirvan para esa misión. 
- Un barco puede cambiar de misión en cualquier momento.
-Nos va a interesar saber si un pirata es útil para una misión, y además si una misión puede ser realizada por un barco.
-*/
 
 class BarcoPirata {
   const property capacidad
@@ -16,9 +11,18 @@ class BarcoPirata {
       tripulacion.add(unPirata)
     }
   }
+  method tieneAlgunTripulantePasadoDeGrogXD() = tripulacion.any({tripulante => tripulante.estaPasadoDeGrogXD()})
   method nroDeTripulantes() = tripulacion.size()
   method tieneSuficienteTripulacion() = self.nroDeTripulantes() > capacidad * 0.9
   method tieneTripulanteConLlave() = tripulacion.any({tripulante => tripulante.tieneLlave()})
+  method puedeSaquear(unBarco) = unBarco.tieneAlgunTripulantePasadoDeGrogXD() or self.tieneMasTripulantesQueLaMitadDe(unBarco)// tira error si pongo ciudad?
+  method tieneMasTripulantesQueLaMitadDe(unBarco) = capacidad > unBarco.nroDeTripulantes() / 2// que de entero y no decimal
+  method todosEstanPasadosDeGrogXD() = tripulacion.all({tripulante => tripulante.estaPasadoDeGrogXD()})
+}
+class Ciudad {
+  const property esCostera
+  var property habitantes
+  method esVulnerabePor(unBarco) = esCostera and (unBarco.nroDeTripulantes() >= habitantes * 0.40 or unBarco.todosEstanPasadosDeGrogXD())
 }
 class Mision {
   method puedeSerCompletada(unBarco) {
@@ -64,24 +68,20 @@ class Saqueo inherits Mision {
     }
     return resultado
   }
+  override method puedeSerCompletada(unBarco) {
+
+  }
 }
-/*
 
 
-Saqueo: los saqueos tienen un objetivo o víctima, que puede ser un barco o una ciudad costera.
-·         Para estas misiones son útiles los piratas que cuenten con menos dinero que una cantidad de monedas determinada 
-(para todas las misiones de saqueo es la misma cantidad, pero se debe poder cambiar)
-  y además se animen a saquear a la víctima de la misión de la que se trate (ver mas abajo).
-·         Para que un saqueo pueda ser realizado por un barco, la víctima debe ser vulnerable al barco (ver más abajo).
-
-
-*/
 class Pirata {
   const items = []// un mapa, una brújula, un loro, un cuchillo, una botella de grogXD, etc. 
   var property nivelDeEbriedad = 0
-  var property monedas
+  var property monedas = 10
   method tieneAlgun(listaDeElementos) = items.difference(listaDeElementos).size() > 0
   method tieneLLave() = items.contains(llave)
   method cantDeItems() = items.size()
   method tiene(unItem) = items.contains(unItem)
+  method estaPasadoDeGrogXD() = nivelDeEbriedad >= 90
+  method seAnimaASaquear(unaCiudad) = nivelDeEbriedad >= 50
 }
