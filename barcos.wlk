@@ -1,6 +1,6 @@
 import objetos.*
 import piratas.*
-
+import misiones.*
 /*
 6) Se sabe que algunos tripulantes son espías de la corona. 
 Estos piratas se comportan igual que los piratas comunes a excepción de que nunca están pasados de grogXD
@@ -12,7 +12,7 @@ b) Saber cuántos tipos distintos de items se juntan entre los tripulantes de un
 */
 class BarcoPirata {
   const property capacidad
-  var tripulacion = #{}
+  const tripulacion = #{}
   var mision
   method mision(nuevaMision) {
     tripulacion.forEach({tripulante => 
@@ -27,6 +27,7 @@ class BarcoPirata {
       tripulacion.add(unPirata)
     }
   }
+  method algunoTieneLlave() = tripulacion.any({tripulante => tripulante.tieneLLave()})
   method tripulantePasadoDeGrogXDConMasDinero() = self.tripulantePasadosDeGrogXD().max({tripulante => tripulante.monedas()})
   method tripulantePasadosDeGrogXD() = tripulacion.filter({tripulante => tripulante.estaPasadoDeGrogXD()})
   method tripulanteConMasDinero() = tripulacion.max({tripulante => tripulante.monedas()})
