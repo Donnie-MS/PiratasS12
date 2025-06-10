@@ -1,3 +1,7 @@
+
+import objetos.*
+import barcos.*
+import piratas.*
 class Ciudad {
   const property esCostera
   var property habitantes
@@ -14,23 +18,25 @@ class Mision {
 }
 class BusquedaDelTesoro inherits Mision {
   const elementosRequeridos = [brujula, mapa, botellaDeGrogXD]
+  method esUtil(unPirata) = unPirata.tieneAlgun(elementosRequeridos) and unPirata.monedas() <= 5
   method puedeHacerMision(unPirata) {
     var resultado = false
-    if (unPirata.tieneAlgun(elementosRequeridos) and unPirata.monedas() <= 5) {
+    if (self.esUtil(unPirata)) {
       resultado = true
     }
     return resultado
   }
   override method puedeSerCompletada(unBarco) {
-    super()//arreglar
+    return super(unBarco) and unBarco.algunoTieneLlave()
   }
 }
 
 class ConvertirseEnLeyenda inherits Mision {
   const property elementoRequerido 
+  method esUtil(unPirata) = unPirata.cantDeItems() >= 10 and unPirata.tiene(elementoRequerido)
   method puedeHacerMision(unPirata) {
     var resultado = false
-    if(unPirata.cantDeItems() >= 10 and unPirata.tiene(elementoRequerido)) {
+    if(self.esUtil(unPirata)) {
       resultado = true
     }
     return resultado
@@ -40,9 +46,10 @@ class ConvertirseEnLeyenda inherits Mision {
 class Saqueo inherits Mision {
   const property objetivo
   var property capMonedas
+  method esUtil(unPirata) = unPirata.monedas() < capMonedas and unPirata.puedeSaquear(objetivo)
   method puedeHacerMision(unPirata) {
     var resultado = false
-    if (unPirata.monedas() < capMonedas and unPirata.puedeSaquear(objetivo)) {
+    if (self.esUtil(unPirata)) {
       resultado = true
     }
     return resultado
